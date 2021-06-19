@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "t/efyUPvd9naj8UX02Zp0K54UlX6Jt+HefyYRS67M/e7XCIP6H8mJCotUGZ7873QWXIqs2wC3n2y1tcXAA+b2Q==",
+  "success": true,
+  "projectFilePath": "D:\\Study\\PRN292\\Project\\HostelMangementAPI\\HM.Model\\HM.Model.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\phuoc'\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.7\\microsoft.aspnetcore.http.features.5.0.7.nupkg.sha512",
+    "C:\\Users\\phuoc'\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "C:\\Users\\phuoc'\\.nuget\\packages\\system.io.pipelines\\5.0.1\\system.io.pipelines.5.0.1.nupkg.sha512",
+    "C:\\Users\\phuoc'\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
