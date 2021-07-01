@@ -14,6 +14,7 @@ namespace HM.Model.ResponseModel
         public int NumberOfCustomer { get; set; }
         public double Price { get; set; }
         public int Status { get; set; }
+        public int[] Fees { get; set; }
         public string HostelId { get; set; }
     }
 }

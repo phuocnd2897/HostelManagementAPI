@@ -12,11 +12,10 @@ namespace HM.Model.RequestModel
         public string Description { get; set; }
         public IFormFile Avatar { get; set; }
         public int Capacity { get; set; }
-        public int NumberOfCustomer { get; set; }
         public double Price { get; set; }
         public int Status { get; set; }
         public bool IsActive { get; set; }
         public string HostelId { get; set; }
-        public int[] FeeIds { get; set; }
+        public string FeeIds { get; set; }
     }
 }

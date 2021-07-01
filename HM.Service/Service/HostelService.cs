@@ -33,7 +33,7 @@ namespace HM.Service.Service
             {
                 imageName = new string(Path.GetFileNameWithoutExtension(newItem.Avatar.FileName).Take(10).ToArray()).Replace(' ', '-');
                 imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(newItem.Avatar.FileName);
-                var imagePath = Path.Combine(savePath, "wwwroot/Avatar", imageName);
+                var imagePath = Path.Combine(savePath, "wwwroot/Hostel", imageName) + ".jpg";
                 using (FileStream fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     newItem.Avatar.CopyTo(fileStream);
@@ -45,13 +45,14 @@ namespace HM.Service.Service
                 Name = newItem.Name,
                 WardId = newItem.WardId,
                 Address = newItem.Address,
-                Avatar = imageName != "" ? url + "/Hostel//" + imageName : "",
+                Avatar = imageName != "" ? (url + "/Hostel//" + imageName) : (url + "/Hostel//thiet-ke-phong-tro-khep-kin.jpg"),
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
                 Status = 1,
                 Lock = false,
                 AccountId = accountId
             });
+            this._hostelRepository.Commit();
             if (result != null)
             {
                 return newItem;
@@ -100,6 +101,8 @@ namespace HM.Service.Service
                 Id = s.Id,
                 Name = s.Name,
                 Avatar = s.Avatar,
+                ProvinceId = s.Ward.District.ProvinceId,
+                DistrictId = s.Ward.DistrictId,
                 WardId = s.WardId,
                 ProvinceName = s.Ward.District.Province.Name,
                 DistrictName = s.Ward.District.Name,
@@ -125,7 +128,7 @@ namespace HM.Service.Service
                 {
                     fileName = System.IO.Path.GetFileName(uri.LocalPath);
                 }
-                var path = Path.Combine(savePath, "wwwroot/Avatar", fileName);
+                var path = Path.Combine(savePath, "wwwroot/Hostel", fileName);
 
                 if (System.IO.File.Exists(path))
                 {
@@ -133,7 +136,7 @@ namespace HM.Service.Service
                 }
                 string imageName = new string(Path.GetFileNameWithoutExtension(newItem.Avatar.FileName).Take(10).ToArray()).Replace(' ', '-');
                 imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(newItem.Avatar.FileName);
-                var imagePath = Path.Combine(savePath, "wwwroot/Avatar", imageName);
+                var imagePath = Path.Combine(savePath, "wwwroot/Hostel", imageName) + ".jpg";
                 using (FileStream fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     newItem.Avatar.CopyTo(fileStream);

@@ -1,20 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace HM.Model.Model
+namespace HM.Model.RequestModel
 {
-    [Table("Customer")]
-    public class Customer
+    public class CustomerRequestModel
     {
-        public Customer()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-        [Key]
-        [Required, MaxLength(128)]
         public string Id { get; set; }
         [Required, MaxLength(200)]
         public string FullName { get; set; }
@@ -28,16 +21,9 @@ namespace HM.Model.Model
         [Required, MaxLength(200)]
         public string Address { get; set; }
         [Required, MaxLength(200)]
-        public string Image { get; set; }
-        public DateTime DateIn { get; set; }
+        public IFormFile Image { get; set; }
         public int Status { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
         [Required, MaxLength(128)]
         public string RoomId { get; set; }
-        [ForeignKey("WardId")]
-        public virtual Ward Ward { get; set; }
-        [ForeignKey("RoomId")]
-        public virtual Room Room { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace API.Controllers
                 var result = this._districtService.GetByProvinceId(Id);
                 if (result != null)
                 {
-                    return Ok(result);
+                    return Ok(result.ToList());
                 }
                 return BadRequest("Có lỗi xảy ra vui lòng thử lại!");
             }

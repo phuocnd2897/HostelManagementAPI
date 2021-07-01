@@ -61,7 +61,7 @@ namespace API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("Registration")]
-        public IActionResult RegistrationAccount([FromForm] AppAccountRegisterRequestModel newItem)
+        public IActionResult RegistrationAccount(AppAccountRegisterRequestModel newItem)
         {
             try
             {

@@ -21,7 +21,7 @@ namespace API.Controllers
             _hostelService = hostelService;
         }
         [HttpPost]
-        public IActionResult Add(HostelRequestModel newItem)
+        public IActionResult Add([FromForm] HostelRequestModel newItem)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace API.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(HostelRequestModel newItem)
+        public IActionResult Update([FromForm] HostelRequestModel newItem)
         {
             try
             {

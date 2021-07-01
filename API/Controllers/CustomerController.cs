@@ -13,20 +13,21 @@ namespace API.Controllers
     [Authorize("Bearer")]
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private IRoomService _roomService;
-        public RoomController(IRoomService roomService)
+        private ICustomerService _customerService;
+        public CustomerController(ICustomerService customerService)
         {
-            _roomService = roomService;
+            _customerService = customerService;
         }
         [HttpPost]
-        public IActionResult Add([FromForm] RoomRequestModel newItem)
+        public IActionResult Add([FromForm] CustomerRequestModel newItem)
         {
             try
             {
+                var accountId = User.Identity.Name;
                 var baseUrl = string.Format("{0}://{1}", Request.Scheme, Request.Host);
-                var result = this._roomService.Add(newItem, Directory.GetCurrentDirectory(), baseUrl);
+                var result = this._customerService.Add(newItem, Directory.GetCurrentDirectory(), baseUrl);
                 if (result != null)
                 {
                     return Ok(result);
@@ -39,12 +40,13 @@ namespace API.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update([FromForm] RoomRequestModel newItem)
+        public IActionResult Update([FromForm] CustomerRequestModel newItem)
         {
             try
             {
+                var accountId = User.Identity.Name;
                 var baseUrl = string.Format("{0}://{1}", Request.Scheme, Request.Host);
-                var result = this._roomService.Update(newItem, Directory.GetCurrentDirectory(), baseUrl);
+                var result = this._customerService.Update(newItem, Directory.GetCurrentDirectory(), baseUrl);
                 if (result != null)
                 {
                     return Ok(result);
@@ -61,7 +63,7 @@ namespace API.Controllers
         {
             try
             {
-                this._roomService.Delete(Id);
+                this._customerService.Delete(Id);
                 return Ok();
             }
             catch (Exception ex)
@@ -70,29 +72,12 @@ namespace API.Controllers
             }
         }
         [HttpGet]
-        [Route("GetByHostelId")]
-        public IActionResult GetByHostelId(string Id)
+        [Route("GetByRoomId")]
+        public IActionResult GetByRoomId(string Id)
         {
             try
             {
-                var result = this._roomService.GetByHostelId(Id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        [HttpGet]
-        public IActionResult Get(string Id)
-        {
-            try
-            {
-                var result = this._roomService.Get(Id);
-                if (result == null)
-                {
-                    return BadRequest("Có lỗi xảy ra vui lòng thử lại");
-                }
+                var result = this._customerService.GetByRoomId(Id);
                 return Ok(result);
             }
             catch (Exception ex)

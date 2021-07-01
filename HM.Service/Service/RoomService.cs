@@ -3,6 +3,7 @@ using HM.Data.Repository;
 using HM.Model.Model;
 using HM.Model.RequestModel;
 using HM.Model.ResponseModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +14,10 @@ namespace HM.Service.Service
 {
     public interface IRoomService
     {
-        RoomRequestModel Add(RoomRequestModel newItem, string accountId, string savePath, string url);
-        RoomRequestModel Update(RoomRequestModel newItem, string accountId, string savePath, string url);
+        RoomRequestModel Add(RoomRequestModel newItem, string savePath, string url);
+        RoomRequestModel Update(RoomRequestModel newItem, string savePath, string url);
         void Delete(string Id);
-        IEnumerable<RoomResponseModel> GetAll();
+        IEnumerable<RoomResponseModel> GetByHostelId(string Id);
         RoomResponseModel Get(string Id);
     }
     public class RoomService : IRoomService
@@ -26,14 +27,14 @@ namespace HM.Service.Service
         {
             _roomRepository = roomRepository;
         }
-        public RoomRequestModel Add(RoomRequestModel newItem, string accountId, string savePath, string url)
+        public RoomRequestModel Add(RoomRequestModel newItem, string savePath, string url)
         {
             string imageName = "";
             if (newItem.Avatar != null)
             {
                 imageName = new string(Path.GetFileNameWithoutExtension(newItem.Avatar.FileName).Take(10).ToArray()).Replace(' ', '-');
                 imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(newItem.Avatar.FileName);
-                var imagePath = Path.Combine(savePath, "wwwroot/Avatar", imageName);
+                var imagePath = Path.Combine(savePath, "wwwroot/Room", imageName) + ".jpg";
                 using (FileStream fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     newItem.Avatar.CopyTo(fileStream);
@@ -44,7 +45,7 @@ namespace HM.Service.Service
             {
                 Name = newItem.Name,
                 Description = newItem.Description,
-                Avatar = imageName != "" ? url + "/Room/" + imageName : "",
+                Avatar = imageName != "" ? (url + "/Room/" + imageName) : (url + "/Room/phongtrodep.jpg"),
                 Capacity = newItem.Capacity,
                 NumberOfCustomer = 0,
                 Price = newItem.Price,
@@ -53,8 +54,9 @@ namespace HM.Service.Service
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
                 HostelId = newItem.HostelId,
-                RoomFees = newItem.FeeIds.Select(s => new RoomFee { FeeId = s }).ToArray()
+                RoomFees = JsonConvert.DeserializeObject<int[]>(newItem.FeeIds).Select(s => new RoomFee { FeeId = s }).ToArray()
             });
+            this._roomRepository.Commit();
             if (result != null)
             {
                 return newItem;
@@ -100,9 +102,9 @@ namespace HM.Service.Service
             };
         }
 
-        public IEnumerable<RoomResponseModel> GetAll()
+        public IEnumerable<RoomResponseModel> GetByHostelId(string Id)
         {
-            var result = this._roomRepository.GetMulti(s => s.IsActive == true, new string[] { "Customers" })
+            var result = this._roomRepository.GetMulti(s => s.IsActive == true && s.HostelId == Id, new string[] { "Customers", "RoomFees" })
                 .Select(s => new RoomResponseModel
                 {
                     Id = s.Id,
@@ -113,12 +115,13 @@ namespace HM.Service.Service
                     NumberOfCustomer = s.Customers.Where(s => s.Status == (int)EnumStatusCustomer.Stay).Count(),
                     Price = s.Price,
                     Status = s.Status,
+                    Fees = s.RoomFees.Select(s => s.FeeId).ToArray(),
                     HostelId = s.HostelId
                 });
             return result;
         }
 
-        public RoomRequestModel Update(RoomRequestModel newItem, string accountId, string savePath, string url)
+        public RoomRequestModel Update(RoomRequestModel newItem, string savePath, string url)
         {
             var result = this._roomRepository.GetSingle(s => s.Id == newItem.Id);
             if (newItem.Avatar != null)
@@ -129,7 +132,7 @@ namespace HM.Service.Service
                 {
                     fileName = System.IO.Path.GetFileName(uri.LocalPath);
                 }
-                var path = Path.Combine(savePath, "wwwroot/Avatar", fileName);
+                var path = Path.Combine(savePath, "wwwroot/Room", fileName);
 
                 if (System.IO.File.Exists(path))
                 {
@@ -137,22 +140,21 @@ namespace HM.Service.Service
                 }
                 string imageName = new string(Path.GetFileNameWithoutExtension(newItem.Avatar.FileName).Take(10).ToArray()).Replace(' ', '-');
                 imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(newItem.Avatar.FileName);
-                var imagePath = Path.Combine(savePath, "wwwroot/Avatar", imageName);
+                var imagePath = Path.Combine(savePath, "wwwroot/Room", imageName) + ".jpg";
                 using (FileStream fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     newItem.Avatar.CopyTo(fileStream);
                     fileStream.Flush();
                 }
-                result.Avatar = imageName != "" ? url + "/Room/" + imageName : "";
+                result.Avatar = imageName != "" ? (url + "/Room/" + imageName) : (url + "/Room/phongtrodep.jpg");
             }
             result.Name = newItem.Name;
             result.Description = newItem.Description;
             result.Capacity = newItem.Capacity;
-            result.NumberOfCustomer = newItem.NumberOfCustomer;
             result.Price = newItem.Price;
             result.Status = newItem.Status;
             result.UpdatedDate = DateTime.Now;
-            result.RoomFees = newItem.FeeIds.Select(s => new RoomFee { FeeId = s }).ToArray();
+            result.RoomFees = JsonConvert.DeserializeObject<int[]>(newItem.FeeIds).Select(s => new RoomFee { FeeId = s }).ToArray();
             this._roomRepository.Update(result);
             this._roomRepository.Commit();
             return newItem;
