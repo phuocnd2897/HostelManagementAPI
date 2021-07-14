@@ -21,8 +21,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Avatar\" />
-    <Folder Include="wwwroot\Hostel\" />
-    <Folder Include="wwwroot\Room\" />
   </ItemGroup>
 
 

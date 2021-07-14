@@ -25,6 +25,7 @@ namespace HM.Service.Service
         public CustomerService(ICustomerRepository customerRepository, IRoomRepository roomRepository)
         {
             _customerRepository = customerRepository;
+            _roomRepository = roomRepository;
         }
         public CustomerRequestModel Add(CustomerRequestModel newItem, string savePath, string url)
         {
@@ -56,6 +57,13 @@ namespace HM.Service.Service
                 UpdatedDate = DateTime.Now,
                 RoomId = newItem.RoomId,
             });
+            var room = this._roomRepository.GetSingle(s => s.Id == newItem.RoomId);
+            if (room.Status == (int)EnumStatusRoom.Vacant)
+            {
+                room.Status = (int)EnumStatusRoom.Used;
+            }
+            room.NumberOfCustomer += 1;
+            this._roomRepository.Update(room);
             this._customerRepository.Commit();
             if (result != null)
             {
